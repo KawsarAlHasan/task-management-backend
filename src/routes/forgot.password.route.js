@@ -3,7 +3,7 @@ const {
   forgotPassword,
   verifyResetCode,
   newPasswordSet,
-} = require("../controllers/forgotPasswordController");
+} = require("../controllers/forgot.password.controller");
 
 const router = express.Router();
 
