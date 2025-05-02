@@ -9,14 +9,16 @@ const {
   deleteTask,
 } = require("../controllers/task.controller");
 
+const varifyToken = require("../middleware/verify.user.token");
+
 const router = express.Router();
 
-router.post("/create", createTask);
+router.post("/create", varifyToken, createTask);
 
-router.get("/user-id/:userId", getTasksByUser);
+router.get("/my", varifyToken, getTasksByUser);
 router.get("/task-id/:taskId", getTaskById);
 
-router.put("/update/:taskId", updateTask);
+router.put("/update/:taskId", varifyToken, updateTask);
 router.put("/status/:taskId", updateTaskStatus);
 
 router.delete("/delete/:taskId", deleteTask);
