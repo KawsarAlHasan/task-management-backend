@@ -3,13 +3,9 @@ const Task = require("../models/task.model");
 // Create Task
 exports.createTask = async (req, res, next) => {
   try {
-    const { description, date, status, user, category } = req.body;
-    if (!user) {
-      return res.status(401).json({
-        success: false,
-        error: "Please provide user field in body",
-      });
-    }
+    const user = req?.decodedUser._id;
+
+    const { description, date, status, category } = req.body;
 
     const data = await Task.create({
       description,
@@ -36,7 +32,7 @@ exports.createTask = async (req, res, next) => {
 // Get all tasks for a specific user with filtering
 exports.getTasksByUser = async (req, res) => {
   try {
-    const userId = req.params.userId;
+    const userId = req?.decodedUser._id;
     const { date, status, category } = req.query;
 
     const filter = { user: userId };
@@ -68,7 +64,7 @@ exports.getTasksByUser = async (req, res) => {
       .populate("user", "firstName lastName");
 
     if (!tasks || tasks.length === 0) {
-      return res.status(404).json({
+      return res.status(201).json({
         success: false,
         message: "No tasks found with the given filters",
       });
@@ -96,7 +92,7 @@ exports.getTaskById = async (req, res) => {
     const task = await Task.findById(taskId).populate("category", "name");
 
     if (!task) {
-      return res.status(404).json({
+      return res.status(201).json({
         success: false,
         message: "Task not found",
       });
@@ -119,13 +115,14 @@ exports.getTaskById = async (req, res) => {
 // update Task
 exports.updateTask = async (req, res) => {
   try {
-    const { description, date, user, category } = req.body;
+    const user = req?.decodedUser._id;
+    const { description, date, category } = req.body;
     const taskId = req.params.taskId;
 
     const task = await Task.findById(taskId);
 
     if (!task) {
-      return res.status(404).json({
+      return res.status(201).json({
         success: false,
         message: "Task not found",
       });
@@ -177,7 +174,7 @@ exports.updateTaskStatus = async (req, res) => {
     const task = await Task.findByIdAndUpdate(taskId, { status });
 
     if (!task) {
-      return res.status(404).json({
+      return res.status(400).json({
         success: false,
         message: "Task not found",
       });
@@ -205,7 +202,7 @@ exports.deleteTask = async (req, res) => {
     const deletedTask = await Task.findByIdAndDelete(taskId);
 
     if (!deletedTask) {
-      return res.status(404).json({
+      return res.status(400).json({
         success: false,
         message: "Task not found",
       });

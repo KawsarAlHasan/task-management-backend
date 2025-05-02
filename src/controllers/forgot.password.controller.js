@@ -10,7 +10,7 @@ exports.forgotPassword = async (req, res) => {
     const { email } = req.body;
 
     if (!email) {
-      return res.status(404).send({
+      return res.status(400).send({
         success: false,
         message: "Email is required",
       });
@@ -61,7 +61,7 @@ exports.verifyResetCode = async (req, res) => {
     const { email, reset_code } = req.body;
 
     if (!email || !reset_code) {
-      return res.status(404).send({
+      return res.status(400).send({
         success: false,
         message: "email & reset_code is required",
       });
@@ -100,7 +100,7 @@ exports.newPasswordSet = async (req, res) => {
     const { email, reset_code, new_password } = req.body;
 
     if (!email || !reset_code || !new_password) {
-      return res.status(404).send({
+      return res.status(400).send({
         success: false,
         message: "email, new_password & reset_code is required",
       });
@@ -123,7 +123,7 @@ exports.newPasswordSet = async (req, res) => {
     // Find user and update password
     const user = await User.findOne({ email });
     if (!user) {
-      return res.status(404).json({
+      return res.status(400).json({
         success: false,
         message: "User not found",
       });
